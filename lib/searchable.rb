@@ -3,24 +3,20 @@ require_relative '01_sql_object'
 
 module Searchable
   def where(params)
-    
-    wherer = params.keys.map{|el| el.to_s + " = ?"}.join(" AND ")
+    where_params = params.keys.map{ |el| el.to_s + " = ?" }.join(" AND ")
     vals = params.values
-    
     res = DBConnection.execute(<<-SQL, *vals)
-      SELECT 
+      SELECT
         *
-      FROM 
+      FROM
         #{self.table_name}
-      WHERE 
-        #{wherer}
-    
-    
+      WHERE
+        #{where_params}
     SQL
     results = []
     res.each do |el|
       results << self.new(el)
-    end 
+    end
     results
   end
 end
